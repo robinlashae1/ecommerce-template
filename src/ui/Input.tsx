@@ -28,17 +28,18 @@ export function Input({
       <input
         id={id}
         className={[
-          "w-full rounded-lg border bg-white px-4 py-3 text-sm outline-none transition-colors",
-          "placeholder:text-gray-400",
-          "focus:border-black focus:ring-1 focus:ring-black",
-          "disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500",
-          error
-            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-            : "border-gray-300",
-          className,
-        ]
-          .filter(Boolean)
-          .join(" ")}
+  "w-full bg-[var(--theme-background)] px-4 py-3 text-sm outline-none transition-colors",
+  "placeholder:text-gray-400",
+  "focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]",
+  "disabled:cursor-not-allowed disabled:bg-[var(--theme-surface)] disabled:text-gray-500",
+  error
+    ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+    : "border-[var(--theme-border)]",
+  "rounded-[var(--theme-radius-md)]",
+  className,
+]
+  .filter(Boolean)
+  .join(" ")}
         aria-invalid={error ? true : undefined}
         aria-describedby={
           error

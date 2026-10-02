@@ -9,8 +9,9 @@ import {
   Truck,
 } from "lucide-react";
 import { useState } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
+
+import { createOrderId, createOrderNumber, saveOrder } from "../lib/orders";
 
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
@@ -79,72 +80,82 @@ const sectionTitleClass =
 export function Checkout() {
   const navigate = useNavigate();
 
-  const {
-    items,
-    subtotal,
-    discount,
-    shipping,
-    tax,
-    total,
-  } = useCart();
+const {
+  items,
+  subtotal,
+  discount,
+  shipping,
+  tax,
+  total,
+  clearCart,
+} = useCart();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isEmpty = items.length === 0;
 
-    const handleSubmit = async (
-      event: Parameters<NonNullable<React.ComponentProps<"form">["onSubmit"]>>[0]
-    ) => {
-    event.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    if (isSubmitting) return;
+  if (isSubmitting) return;
 
-    const form = event.currentTarget;
+  const form = event.currentTarget;
 
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
 
-    const formData = new FormData(form);
+  const formData = new FormData(form);
 
-    const checkoutData = {
-      contact: {
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-      },
-      shippingAddress: {
-        firstName: formData.get("firstName"),
-        lastName: formData.get("lastName"),
-        address: formData.get("address"),
-        apartment: formData.get("apartment"),
-        city: formData.get("city"),
-        state: formData.get("state"),
-        zip: formData.get("zip"),
-      },
-      payment: {
-        cardNumber: formData.get("cardNumber"),
-        expiration: formData.get("expiration"),
-        cvv: formData.get("cvv"),
-      },
-      items,
-      totals: {
-        subtotal,
-        discount,
-        shipping,
-        tax,
-        total,
-      },
-    };
+  const email = String(formData.get("email") ?? "");
+  const phone = String(formData.get("phone") ?? "");
 
-    console.log("Checkout submitted:", checkoutData);
+  const order = {
+    id: createOrderId(),
+    orderNumber: createOrderNumber(),
+    createdAt: new Date().toISOString(),
 
-    setIsSubmitting(true);
+    contact: {
+      email,
+      phone,
+    },
 
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    shippingAddress: {
+      firstName: String(formData.get("firstName") ?? ""),
+      lastName: String(formData.get("lastName") ?? ""),
+      address: String(formData.get("address") ?? ""),
+      apartment: String(formData.get("apartment") ?? ""),
+      city: String(formData.get("city") ?? ""),
+      state: String(formData.get("state") ?? ""),
+      zip: String(formData.get("zip") ?? ""),
+    },
 
-    navigate("/order-success");
+    items,
+
+    totals: {
+      subtotal,
+      discount,
+      shipping,
+      tax,
+      total,
+    },
+
+    estimatedShipping: "3–5 business days",
   };
+
+  console.log("Demo order created:", order);
+
+  setIsSubmitting(true);
+
+  await new Promise((resolve) => setTimeout(resolve, 800));
+
+  saveOrder(order);
+
+  clearCart();
+
+  navigate("/order-success", { replace: true });
+};
 
   if (isEmpty) {
     return (
@@ -211,19 +222,80 @@ export function Checkout() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-        <form
-          onSubmit={handleSubmit}
-          className="grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-16"
-        >
-          <div className="space-y-10">
-            {/* Contact */}
-            <section>
-              <div className="mb-6">
-                <h2 className={sectionTitleClass}>Contact information</h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  We'll use this information to send your order confirmation.
-                </p>
-              </div>
+  <form
+    onSubmit={async (event) => {
+      event.preventDefault();
+
+      if (isSubmitting) return;
+
+      const form = event.currentTarget;
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      const order = {
+        id: createOrderId(),
+        orderNumber: createOrderNumber(),
+        createdAt: new Date().toISOString(),
+
+        contact: {
+          email: String(formData.get("email") ?? ""),
+          phone: String(formData.get("phone") ?? ""),
+        },
+
+        shippingAddress: {
+          firstName: String(formData.get("firstName") ?? ""),
+          lastName: String(formData.get("lastName") ?? ""),
+          address: String(formData.get("address") ?? ""),
+          apartment: String(formData.get("apartment") ?? ""),
+          city: String(formData.get("city") ?? ""),
+          state: String(formData.get("state") ?? ""),
+          zip: String(formData.get("zip") ?? ""),
+        },
+
+        items,
+
+        totals: {
+          subtotal,
+          discount,
+          shipping,
+          tax,
+          total,
+        },
+
+        estimatedShipping: "3–5 business days",
+      };
+
+      setIsSubmitting(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      saveOrder(order);
+      clearCart();
+
+      navigate("/order-success", {
+        replace: true,
+      });
+    }}
+    className="grid gap-10 lg:grid-cols-[1fr_380px] lg:gap-16"
+  >
+    <div className="space-y-10">
+
+      {/* Contact */}
+      <section>
+        <div className="mb-6">
+          <h2 className={sectionTitleClass}>
+            Contact information
+          </h2>
+
+          <p className="mt-1 text-sm text-gray-500">
+            We'll use this information to send your order confirmation.
+          </p>
+        </div>
 
               <div className="grid gap-5">
                 <Input
@@ -253,20 +325,20 @@ export function Checkout() {
                     placeholder="12345678901"
                     className={fieldClass}
                     required
-                    minLength={11}
-                    maxLength={11}
-                    pattern="[0-9]{11}"
-                    title="Enter exactly 11 digits."
+                    minLength={10}
+                    maxLength={10}
+                    pattern="[0-9]{10}"
+                    title="Enter exactly 10 digits."
                     onInput={(event) => {
                       event.currentTarget.value =
                         event.currentTarget.value
                           .replace(/\D/g, "")
-                          .slice(0, 11);
+                          .slice(0, 10);
                     }}
                   />
 
                   <p className="mt-2 text-xs text-gray-500">
-                    Enter exactly 11 digits, including the country code.
+                    Enter exactly 10 digits.
                   </p>
                 </div>
               </div>

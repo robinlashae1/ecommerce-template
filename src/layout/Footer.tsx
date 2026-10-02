@@ -11,50 +11,27 @@ export function Footer() {
   return (
     <footer className="mt-20 border-t border-gray-200 bg-gray-50">
       {/* Newsletter */}
-      <section className="border-b border-gray-200">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 md:grid-cols-2 md:items-center lg:px-8 lg:py-16">
-          <div>
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
-              Stay in the loop
-            </p>
+      {siteConfig.newsletter.enabled && (
+  <section className="border-b border-gray-200">
+    <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 md:grid-cols-2 md:items-center lg:px-8 lg:py-16">
+      <div>
+        <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
+          {siteConfig.newsletter.eyebrow}
+        </p>
 
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Get updates from {siteConfig.brand.name}.
-            </h2>
+        <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+          {siteConfig.newsletter.title}
+        </h2>
 
-            <p className="mt-3 max-w-lg text-sm leading-6 text-gray-600">
-              Sign up for product launches, special offers,
-              and occasional updates.
-            </p>
-          </div>
+        <p className="mt-3 max-w-lg text-sm leading-6 text-gray-600">
+          {siteConfig.newsletter.description}
+        </p>
+      </div>
 
-          <form
-            className="flex flex-col gap-3 sm:flex-row"
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <Input
-              id="footer-email"
-              name="email"
-              type="email"
-              placeholder="Email address"
-              aria-label="Email address"
-              required
-              className="sm:flex-1"
-            />
-
-            <Button
-              type="submit"
-              size="md"
-              className="shrink-0"
-            >
-              Subscribe
-              <ArrowRight size={16} className="ml-2" />
-            </Button>
-          </form>
-        </div>
-      </section>
+      {/* existing newsletter form */}
+    </div>
+  </section>
+)}
 
       {/* Main footer */}
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-16">
@@ -62,41 +39,57 @@ export function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link
-              to="/"
-              className="text-lg font-semibold tracking-tight"
-            >
-              {siteConfig.brand.name}
-            </Link>
+                to="/"
+                className="inline-flex items-center"
+              >
+                {siteConfig.branding.logo ? (
+                  <img
+                    src={siteConfig.branding.logo}
+                    alt={siteConfig.name}
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-lg font-semibold tracking-tight">
+                    {siteConfig.name}
+                  </span>
+                )}
+              </Link>
 
             <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
-              {siteConfig.brand.description}
+              {siteConfig.description}
             </p>
 
-                <div className="mt-6 flex items-center gap-2">
-                <a
-                    href={siteConfig.social.instagram}
-                    aria-label="Instagram"
-                    className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
-                >
-                    Instagram
-                </a>
+                <div className="mt-6 flex flex-wrap items-center gap-2">
+  {siteConfig.social.instagram && (
+    <a
+      href={siteConfig.social.instagram}
+      aria-label="Instagram"
+      className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
+    >
+      Instagram
+    </a>
+  )}
 
-                <a
-                    href={siteConfig.social.facebook}
-                    aria-label="Facebook"
-                    className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
-                >
-                    Facebook
-                </a>
+  {siteConfig.social.facebook && (
+    <a
+      href={siteConfig.social.facebook}
+      aria-label="Facebook"
+      className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
+    >
+      Facebook
+    </a>
+  )}
 
-                <a
-                    href={siteConfig.social.tiktok}
-                    aria-label="TikTok"
-                    className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
-                >
-                    TikTok
-                </a>
-                </div>
+  {siteConfig.social.tiktok && (
+    <a
+      href={siteConfig.social.tiktok}
+      aria-label="TikTok"
+      className="flex h-9 items-center justify-center rounded-full border border-gray-200 bg-white px-4 text-xs font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-black"
+    >
+      TikTok
+    </a>
+  )}
+</div>
           </div>
 
           {/* Shop */}
@@ -188,7 +181,7 @@ export function Footer() {
       <div className="border-t border-gray-200">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-xs text-gray-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <p>
-            © {currentYear} {siteConfig.brand.name}. All rights
+            © {currentYear} {siteConfig.name}. All rights
             reserved.
           </p>
 

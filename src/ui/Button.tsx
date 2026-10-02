@@ -1,6 +1,9 @@
 import type { ButtonHTMLAttributes } from "react";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+import { themeConfig } from "../config/theme";
+
+interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
 }
@@ -12,15 +15,18 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles =
-    "inline-flex items-center justify-center rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50";
-
   const variants = {
-    primary: "bg-black text-white hover:bg-gray-800",
-    secondary: "bg-gray-100 text-black hover:bg-gray-200",
+    primary:
+      "bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)]",
+
+    secondary:
+      "bg-[var(--theme-surface)] text-[var(--theme-text)] hover:brightness-95",
+
     outline:
-      "border border-gray-300 bg-transparent text-black hover:bg-gray-100",
-    ghost: "bg-transparent text-black hover:bg-gray-100",
+      "border border-[var(--theme-border)] bg-transparent text-[var(--theme-text)] hover:bg-[var(--theme-surface)]",
+
+    ghost:
+      "bg-transparent text-[var(--theme-text)] hover:bg-[var(--theme-surface)]",
   };
 
   const sizes = {
@@ -29,9 +35,25 @@ export function Button({
     lg: "px-7 py-4 text-base",
   };
 
+  const radius = {
+    sm: "rounded-[var(--theme-radius-sm)]",
+    md: "rounded-[var(--theme-radius-md)]",
+    lg: "rounded-[var(--theme-radius-lg)]",
+    pill: "rounded-[var(--theme-radius-pill)]",
+  };
+
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+      className={[
+        "inline-flex items-center justify-center font-medium transition-colors",
+        "disabled:cursor-not-allowed disabled:opacity-50",
+        radius[themeConfig.buttons.radius],
+        variants[variant],
+        sizes[size],
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
       {...props}
     >
       {children}

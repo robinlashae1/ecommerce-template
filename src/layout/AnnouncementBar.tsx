@@ -1,22 +1,15 @@
 import { ArrowRight, X } from "lucide-react";
 import { useState } from "react";
+import { siteConfig } from "../config/site";
 
-interface AnnouncementBarProps {
-  message?: string;
-  linkText?: string;
-  linkHref?: string;
-  dismissible?: boolean;
-}
+export function AnnouncementBar() {
+  const { announcement } = siteConfig;
 
-export function AnnouncementBar({
-  message = "Free shipping on orders over $100",
-  linkText = "Shop now",
-  linkHref = "/shop",
-  dismissible = true,
-}: AnnouncementBarProps) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(
+    announcement.enabled
+  );
 
-  if (!isVisible) {
+  if (!announcement.enabled || !isVisible) {
     return null;
   }
 
@@ -24,21 +17,21 @@ export function AnnouncementBar({
     <div className="relative bg-black text-white">
       <div className="mx-auto flex min-h-10 max-w-7xl items-center justify-center px-10 py-2 sm:px-12">
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs sm:text-sm">
-          <span>{message}</span>
+          <span>{announcement.message}</span>
 
-          {linkText && linkHref && (
+          {announcement.linkText && announcement.linkHref && (
             <a
-              href={linkHref}
+              href={announcement.linkHref}
               className="inline-flex items-center gap-1 font-medium underline underline-offset-4 transition-opacity hover:opacity-70"
             >
-              {linkText}
+              {announcement.linkText}
               <ArrowRight size={13} />
             </a>
           )}
         </div>
       </div>
 
-      {dismissible && (
+      {announcement.dismissible && (
         <button
           type="button"
           onClick={() => setIsVisible(false)}

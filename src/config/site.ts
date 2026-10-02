@@ -1,25 +1,40 @@
 export const siteConfig = {
-  brand: {
-    name: "Client Name",
+  name: "Your Store",
+
+  description:
+    "A modern ecommerce store built for everyday life.",
+
+  url: "https://example.com",
+
+  branding: {
     logo: "/images/logo.svg",
     favicon: "/favicon.svg",
-    description: ""
-  },
-  social:{
-    instagram: "",
-    facebook: "",
-    tiktok: "",
-  },
-
-  theme: {
-    primary: "#111111",
-    secondary: "#F5F5F5",
-    accent: "#E5E5E5",
   },
 
   contact: {
-    email: "hello@client.com",
+    email: "hello@example.com",
     phone: "(555) 555-5555",
+  },
+
+  announcement: {
+    enabled: true,
+    message: "Free shipping on orders over $100",
+    linkText: "Shop now",
+    linkHref: "/shop",
+    dismissible: true,
+  },
+  newsletter: {
+  enabled: false,
+  eyebrow: "Stay in the loop",
+  title: "Get updates from Your Store.",
+  description:
+    "Sign up for product launches, special offers, and occasional updates.",
+},
+
+  social: {
+    instagram: "#",
+    facebook: "",
+    tiktok: "#",
   },
 
   navigation: [
@@ -28,22 +43,12 @@ export const siteConfig = {
       href: "/shop",
     },
     {
+      label: "New Arrivals",
+      href: "/shop?sort=newest",
+    },
+    {
       label: "Collections",
       href: "/collections",
     },
-    {
-      label: "About",
-      href: "/about",
-    },
-    { label: "New Arrivals",
-       href: "/shop?sort=newest", 
-    },
   ],
-
-  features: {
-    wishlist: false,
-    reviews: true,
-    newsletter: true,
-    search: true,
-  },
 };

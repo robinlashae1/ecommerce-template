@@ -40,9 +40,19 @@ export function Header() {
         <Link
           to="/"
           onClick={closeMenu}
-          className="text-lg font-semibold tracking-tight"
+          className="flex items-center"
         >
-          {siteConfig.name}
+          {siteConfig.branding.logo ? (
+            <img
+              src={siteConfig.branding.logo}
+              alt={siteConfig.name}
+              className="h-8 w-auto object-contain"
+            />
+          ) : (
+            <span className="text-lg font-semibold tracking-tight">
+              {siteConfig.name}
+            </span>
+          )}
         </Link>
 
         {/* Desktop navigation */}
