@@ -1,10 +1,10 @@
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { useMemo } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 
-import { products } from "../data/products";
-import { ProductGrid } from "../ecommerce/ProductGrid";
 import { Button } from "../ui/Button";
+import { ProductGrid } from "../ecommerce/ProductGrid";
+import { products } from "../data/products";
 
 type SortOption =
   | "featured"
@@ -13,26 +13,25 @@ type SortOption =
   | "price-high"
   | "name";
 
-export default function Shop() {
+export function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("search") ?? "";
-  const category = searchParams.get("category") ?? "all";
-  const sort = (searchParams.get("sort") ??
-    "featured") as SortOption;
+  const category = searchParams.get("category") ?? "";
+  const sort =
+    (searchParams.get("sort") as SortOption) ?? "featured";
 
   const categories = useMemo(() => {
     return Array.from(
       new Set(products.map((product) => product.category))
-    );
+    ).sort();
   }, []);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Search
     if (search.trim()) {
-      const query = search.toLowerCase().trim();
+      const query = search.trim().toLowerCase();
 
       result = result.filter((product) => {
         return (
@@ -46,8 +45,7 @@ export default function Shop() {
       });
     }
 
-    // Category
-    if (category !== "all") {
+    if (category) {
       result = result.filter(
         (product) =>
           product.category.toLowerCase() ===
@@ -55,14 +53,12 @@ export default function Shop() {
       );
     }
 
-    // Sorting
     switch (sort) {
       case "newest":
         result.sort((a, b) => {
-          const aIsNew = a.tags?.includes("new") ? 1 : 0;
-          const bIsNew = b.tags?.includes("new") ? 1 : 0;
-
-          return bIsNew - aIsNew;
+          const aNew = a.tags?.includes("new") ? 1 : 0;
+          const bNew = b.tags?.includes("new") ? 1 : 0;
+          return bNew - aNew;
         });
         break;
 
@@ -85,7 +81,6 @@ export default function Shop() {
         result.sort((a, b) => {
           const aFeatured = a.featured ? 1 : 0;
           const bFeatured = b.featured ? 1 : 0;
-
           return bFeatured - aFeatured;
         });
         break;
@@ -94,66 +89,151 @@ export default function Shop() {
     return result;
   }, [search, category, sort]);
 
-  const updateSearchParam = (
-    key: string,
-    value: string
-  ) => {
-    const nextParams = new URLSearchParams(searchParams);
+  const hasFilters = Boolean(search || category);
 
-    if (value === "all" || value === "") {
-      nextParams.delete(key);
+  const updateSearch = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value.trim()) {
+      params.set("search", value);
     } else {
-      nextParams.set(key, value);
+      params.delete("search");
     }
 
-    setSearchParams(nextParams);
+    setSearchParams(params);
+  };
+
+  const updateCategory = (value: string) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value) {
+      params.set("category", value);
+    } else {
+      params.delete("category");
+    }
+
+    setSearchParams(params);
+  };
+
+  const updateSort = (value: SortOption) => {
+    const params = new URLSearchParams(searchParams);
+
+    if (value === "featured") {
+      params.delete("sort");
+    } else {
+      params.set("sort", value);
+    }
+
+    setSearchParams(params);
   };
 
   const clearFilters = () => {
     setSearchParams({});
   };
 
-  const hasFilters =
-    search !== "" ||
-    category !== "all" ||
-    sort !== "featured";
-
   return (
     <main>
-      {/* Hero */}
+      {/* Page header */}
       <section className="border-b border-gray-200 bg-gray-50">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
           <p className="text-sm font-medium uppercase tracking-[0.2em] text-gray-500">
             Shop
           </p>
 
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
             All products
           </h1>
 
-          <p className="mt-4 max-w-xl text-base leading-7 text-gray-500">
-            Explore our collection of thoughtfully designed
-            products made for everyday life.
+          <p className="mt-4 max-w-xl text-base leading-7 text-gray-600">
+            Explore our complete collection of thoughtfully
+            designed products.
           </p>
         </div>
       </section>
 
-      {/* Controls */}
-      <section className="border-b border-gray-200">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex flex-col gap-5 py-5 lg:flex-row lg:items-center lg:justify-between">
-            {/* Categories */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      {/* Filters */}
+      <section className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            {/* Search */}
+            <div className="relative w-full lg:max-w-sm">
+              <Search
+                size={18}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+
+              <input
+                type="search"
+                value={search}
+                onChange={(event) =>
+                  updateSearch(event.target.value)
+                }
+                placeholder="Search products..."
+                aria-label="Search products"
+                className="w-full rounded-full border border-gray-300 bg-white py-3 pl-11 pr-10 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-black"
+              />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => updateSearch("")}
+                  aria-label="Clear search"
+                  className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-black"
+                >
+                  <X size={15} />
+                </button>
+              )}
+            </div>
+
+            {/* Sort */}
+            <div className="flex items-center gap-3">
+              <SlidersHorizontal
+                size={17}
+                className="text-gray-400"
+              />
+
+              <label
+                htmlFor="sort"
+                className="text-sm text-gray-500"
+              >
+                Sort by
+              </label>
+
+              <select
+                id="sort"
+                value={sort}
+                onChange={(event) =>
+                  updateSort(
+                    event.target.value as SortOption
+                  )
+                }
+                className="rounded-full border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none transition-colors focus:border-black"
+              >
+                <option value="featured">Featured</option>
+                <option value="newest">Newest</option>
+                <option value="price-low">
+                  Price: Low to High
+                </option>
+                <option value="price-high">
+                  Price: High to Low
+                </option>
+                <option value="name">Name</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Categories */}
+          {categories.length > 0 && (
+            <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
               <button
                 type="button"
-                onClick={() =>
-                  updateSearchParam("category", "all")
-                }
-                className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  category === "all"
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                onClick={() => updateCategory("")}
+                className={[
+                  "shrink-0 rounded-full border px-4 py-2 text-sm transition-colors",
+                  !category
+                    ? "border-black bg-black text-white"
+                    : "border-gray-300 bg-white text-gray-600 hover:border-black hover:text-black",
+                ].join(" ")}
               >
                 All
               </button>
@@ -167,120 +247,54 @@ export default function Shop() {
                   <button
                     key={item}
                     type="button"
-                    onClick={() =>
-                      updateSearchParam("category", item)
-                    }
-                    className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    onClick={() => updateCategory(item)}
+                    className={[
+                      "shrink-0 rounded-full border px-4 py-2 text-sm transition-colors",
                       isActive
-                        ? "bg-black text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
+                        ? "border-black bg-black text-white"
+                        : "border-gray-300 bg-white text-gray-600 hover:border-black hover:text-black",
+                    ].join(" ")}
                   >
                     {item}
                   </button>
                 );
               })}
             </div>
-
-            {/* Sort */}
-            <div className="relative shrink-0">
-              <label
-                htmlFor="sort"
-                className="sr-only"
-              >
-                Sort products
-              </label>
-
-              <select
-                id="sort"
-                value={sort}
-                onChange={(event) =>
-                  updateSearchParam(
-                    "sort",
-                    event.target.value
-                  )
-                }
-                className="appearance-none rounded-full border border-gray-300 bg-white py-2.5 pl-4 pr-10 text-sm font-medium outline-none focus:border-black"
-              >
-                <option value="featured">
-                  Featured
-                </option>
-                <option value="newest">
-                  Newest
-                </option>
-                <option value="price-low">
-                  Price: Low to high
-                </option>
-                <option value="price-high">
-                  Price: High to low
-                </option>
-                <option value="name">
-                  Name
-                </option>
-              </select>
-
-              <ChevronDown
-                size={16}
-                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </section>
 
       {/* Products */}
-      <section className="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-14">
-        {/* Search + result count */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-gray-500">
-              {filteredProducts.length}{" "}
-              {filteredProducts.length === 1
-                ? "product"
-                : "products"}
-            </p>
-
-            {search && (
-              <p className="mt-1 text-sm">
-                Results for{" "}
-                <span className="font-medium">
-                  "{search}"
-                </span>
-              </p>
-            )}
-          </div>
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-gray-500">
+            {filteredProducts.length}{" "}
+            {filteredProducts.length === 1
+              ? "product"
+              : "products"}
+          </p>
 
           {hasFilters && (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={clearFilters}
-              className="inline-flex items-center gap-2 self-start text-sm font-medium text-gray-600 hover:text-black sm:self-auto"
+              className="text-gray-500"
             >
-              <X size={15} />
               Clear filters
-            </button>
+              <X size={15} className="ml-2" />
+            </Button>
           )}
         </div>
 
         <ProductGrid
           products={filteredProducts}
           columns={4}
+          showQuickAdd
           emptyMessage="No products match your current filters."
         />
       </section>
-
-      {/* Optional mobile/filter footer */}
-      <div className="fixed bottom-4 left-1/2 z-20 -translate-x-1/2 lg:hidden">
-        <Link to="/shop">
-          <Button
-            variant="secondary"
-            className="gap-2 rounded-full px-5 shadow-lg"
-          >
-            <SlidersHorizontal size={16} />
-            Browse all products
-          </Button>
-        </Link>
-      </div>
     </main>
   );
 }

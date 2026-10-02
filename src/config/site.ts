@@ -3,6 +3,12 @@ export const siteConfig = {
     name: "Client Name",
     logo: "/images/logo.svg",
     favicon: "/favicon.svg",
+    description: ""
+  },
+  social:{
+    instagram: "",
+    facebook: "",
+    tiktok: "",
   },
 
   theme: {
