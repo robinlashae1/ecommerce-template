@@ -18,7 +18,6 @@ export function Button({
   const variants = {
     primary:
       "bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)]",
-
     secondary:
       "bg-[var(--theme-surface)] text-[var(--theme-text)] hover:brightness-95",
 

@@ -10,6 +10,7 @@ import Categories from "./pages/Categories";
 import { Success } from "./pages/Success";
 import { Footer } from "./layout/Footer";
 import { AnnouncementBar } from "./layout/AnnouncementBar";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-success" element={<Success />} />
         <Route path="/collections" element={<Categories />} />
+        <Route path="/about" element={<About />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

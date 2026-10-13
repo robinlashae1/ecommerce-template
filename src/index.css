@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --theme-primary: #111111;
+  --theme-primary: #010101;
   --theme-primary-hover: #2a2a2a;
 
   --theme-background: #ffffff;
@@ -12,7 +12,7 @@
 
   --theme-border: #e5e7eb;
 
-  --theme-success: #15803d;
+  --theme-success: #000000;
   --theme-danger: #dc2626;
   --theme-warning: #a16207;
 

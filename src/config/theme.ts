@@ -1,7 +1,7 @@
 export const themeConfig = {
   colors: {
     primary: "#7c3aed",
-primaryHover: "#6d28d9",
+    primaryHover: "#6d28d9",
 
     background: "#ffffff",
     surface: "#f7f7f7",
@@ -22,14 +22,14 @@ primaryHover: "#6d28d9",
   },
 
   radius: {
-    sm: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.5rem",
-    pill: "9999px",
-  },
+  sm: "0rem",
+  md: "0.25rem",
+  lg: "0.5rem",
+  xl: "0.75rem",
+  pill: "0rem",
+},
 
   buttons: {
-    radius: "pill" as const,
-  },
+  radius: "sm" as const,
+},
 };

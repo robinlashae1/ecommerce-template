@@ -50,5 +50,9 @@ export const siteConfig = {
       label: "Collections",
       href: "/collections",
     },
+    {
+      label: "About",
+      href: "/about",
+    },
   ],
 };
