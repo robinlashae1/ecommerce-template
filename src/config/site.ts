@@ -43,10 +43,6 @@ export const siteConfig = {
       href: "/shop",
     },
     {
-      label: "New Arrivals",
-      href: "/shop?sort=newest",
-    },
-    {
       label: "Collections",
       href: "/collections",
     },

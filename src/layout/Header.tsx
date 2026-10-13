@@ -136,20 +136,6 @@ export function Header() {
                 {item.label}
               </NavLink>
             ))}
-
-            <Link
-              to="/about"
-              onClick={closeMenu}
-              className="flex items-center justify-between px-2 py-4 text-sm"
-            >
-              <span>About Us</span>
-
-              {itemCount > 0 && (
-                <span className="rounded-full bg-black px-2 py-1 text-xs text-white">
-                  {itemCount}
-                </span>
-              )}
-            </Link>
           </nav>
         </div>
       )}
