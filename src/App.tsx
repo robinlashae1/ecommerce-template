@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { Shop } from "./pages/Shop";
 import { Cart } from "./pages/Cart";
 import { Product } from "./pages/Product";
-import { Checkout } from "./pages/Checkout";
+import { CheckOut } from "./pages/CheckOut";
 import  NotFound  from "./pages/NotFound";
 import Categories from "./pages/Categories";
 import { Success } from "./pages/Success";
@@ -22,7 +22,7 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/product/:slug" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkOut" element={<CheckOut />} />
         <Route path="/order-success" element={<Success />} />
         <Route path="/collections" element={<Categories />} />
         <Route path="/about" element={<About />} />
